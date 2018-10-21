@@ -8,9 +8,9 @@ import org.apache.zookeeper.data.Stat;
 import java.util.concurrent.CountDownLatch;
 
 public class ZKWatcher implements Watcher, AsyncCallback.StatCallback {
-    CountDownLatch latch;
+    private CountDownLatch latch;
 
-    public ZKWatcher() {
+    ZKWatcher() {
         latch = new CountDownLatch(1);
     }
 
@@ -26,7 +26,7 @@ public class ZKWatcher implements Watcher, AsyncCallback.StatCallback {
         latch.countDown();
     }
 
-    public void await() throws InterruptedException {
+    void await() throws InterruptedException {
         latch.await();
     }
 }
