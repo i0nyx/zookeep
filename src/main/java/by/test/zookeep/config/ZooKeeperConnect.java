@@ -1,6 +1,6 @@
 package by.test.zookeep.config;
 
-import org.apache.zookeeper.WatchedEvent;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
 
@@ -9,16 +9,15 @@ import java.util.concurrent.CountDownLatch;
 
 import static by.test.zookeep.constant.Constants.ZK_HOST;
 
-public class ZooKeeperConnect implements AutoCloseable {
-    private final CountDownLatch downLatch = new CountDownLatch(0);
+@Slf4j
+public class ZooKeeperConnect {
+    private final CountDownLatch downLatch = new CountDownLatch(1);
     private ZooKeeper zooKeeper;
 
     public ZooKeeper connect() throws IOException, InterruptedException {
-        zooKeeper = new ZooKeeper(ZK_HOST, 10000, new Watcher() {
-            public void process(WatchedEvent watchedEvent) {
-                if (watchedEvent.getState() == Event.KeeperState.SyncConnected) {
-                    downLatch.countDown();
-                }
+        zooKeeper = new ZooKeeper(ZK_HOST, 10000, watchedEvent -> {
+            if (watchedEvent.getState() == Watcher.Event.KeeperState.SyncConnected) {
+                downLatch.countDown();
             }
         });
         downLatch.await();
@@ -29,7 +28,7 @@ public class ZooKeeperConnect implements AutoCloseable {
         try {
             zooKeeper.close();
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            log.error("can't close zookeeper " + e);
         }
     }
 }
