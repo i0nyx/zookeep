@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.data.cassandra.config.AbstractCassandraConfiguration;
 import org.springframework.data.cassandra.config.CassandraClusterFactoryBean;
 import org.springframework.data.cassandra.config.CassandraSessionFactoryBean;
@@ -93,10 +92,5 @@ public class CassandraConfig extends AbstractCassandraConfiguration {
     @Bean
     public SchemaAction getSchemaAction() {
         return SchemaAction.CREATE;
-    }
-
-    @Bean
-    public static PropertySourcesPlaceholderConfigurer propertyConfigInDev() {
-        return new PropertySourcesPlaceholderConfigurer();
     }
 }

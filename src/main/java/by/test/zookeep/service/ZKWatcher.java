@@ -9,7 +9,7 @@ public class ZKWatcher implements Watcher {
     private final CountDownLatch latch;
 
     ZKWatcher() {
-        latch = new CountDownLatch(0);
+        latch = new CountDownLatch(1);
     }
 
     @Override

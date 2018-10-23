@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 
 import static by.test.zookeep.constant.Constants.ZK_HOST;
+import static by.test.zookeep.constant.Constants.ZK_TIMEOUT;
 
 @Slf4j
 public class ZooKeeperConnect {
@@ -15,7 +16,7 @@ public class ZooKeeperConnect {
     private ZooKeeper zooKeeper;
 
     public ZooKeeper connect() throws IOException, InterruptedException {
-        zooKeeper = new ZooKeeper(ZK_HOST, 10000, watchedEvent -> {
+        zooKeeper = new ZooKeeper(ZK_HOST, ZK_TIMEOUT, watchedEvent -> {
             if (watchedEvent.getState() == Watcher.Event.KeeperState.SyncConnected) {
                 downLatch.countDown();
             }
