@@ -15,4 +15,10 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
         log.info("Save new user");
     }
+
+    @Override
+    public boolean checkUser(User user) {
+        User oldUser = userRepository.findByUuid(user.getUuid());
+        return user.equals(oldUser);
+    }
 }
