@@ -1,6 +1,6 @@
 package by.test.zookeep.config;
 
-import by.test.zookeep.repositories.UserRepositories;
+import by.test.zookeep.repositories.UserRepository;
 import by.test.zookeep.service.UserServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -12,7 +12,7 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 @ComponentScan("by.test.zookeep")
 @AllArgsConstructor
 public class ProjectConfig {
-    private UserRepositories repositories;
+    private UserRepository userRepository;
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertyConfigInDev() {
@@ -20,7 +20,7 @@ public class ProjectConfig {
     }
 
     @Bean
-    public UserServiceImpl userService(){
-        return new UserServiceImpl(repositories);
+    public UserServiceImpl userService() {
+        return new UserServiceImpl(userRepository);
     }
 }

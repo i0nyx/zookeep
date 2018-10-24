@@ -10,7 +10,8 @@ public interface ZkManager {
     Stat getZNodeStats(String path) throws KeeperException,
             InterruptedException;
 
-    Object getZNodeData(String path, boolean watchFlag) throws KeeperException,
+    Object getZNodeData(final String path) throws KeeperException,
             InterruptedException;
 
+    void closeConnection();
 }
