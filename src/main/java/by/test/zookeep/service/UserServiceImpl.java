@@ -18,13 +18,13 @@ public class UserServiceImpl implements UserService {
     private ZkManagerImpl zkManager;
 
     @Override
-    public void saveUser(User user) {
+    public void saveUser(final User user) {
         userRepository.save(user);
         log.info("Save user");
     }
 
     @Override
-    public boolean checkUser(User user) {
+    public boolean checkUser(final User user) {
         User oldUser = userRepository.findByUuid(user.getUuid());
         return user.equals(oldUser);
     }
@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
         return ((String) zkManager.getZNodeData(ZK_USER_PATH)).split(";");
     }
 
-    private User buildUser(String[] arr) {
+    private User buildUser(final String[] arr) {
         return User.builder().uuid(UUID.fromString(arr[0])).name(arr[1].trim()).email(arr[2].trim()).build();
     }
 }
