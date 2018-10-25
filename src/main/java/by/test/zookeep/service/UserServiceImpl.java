@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import static by.test.zookeep.constant.Constants.SCHEDULED_TIMEOUT;
@@ -33,16 +34,22 @@ public class UserServiceImpl implements UserService {
     @Scheduled(fixedRate = SCHEDULED_TIMEOUT)
     public void checkUserAndSave() {
         User user = buildUser(getArrStr());
-        if (!checkUser(user)) {
+        if (user != null && !checkUser(user)) {
             saveUser(user);
         }
     }
 
     private String[] getArrStr() {
-        return ((String) zkManager.getZNodeData(ZK_USER_PATH)).split(";");
+        return zkManager.getZNodeData(ZK_USER_PATH);
     }
 
     private User buildUser(final String[] arr) {
-        return User.builder().uuid(UUID.fromString(arr[0])).name(arr[1].trim()).email(arr[2].trim()).build();
+        return Optional.ofNullable(arr)
+                .filter(a -> a.length == 3)
+                .map(a -> User.builder()
+                        .uuid(UUID.fromString(a[0]))
+                        .name(a[1].trim())
+                        .email(a[2].trim()).build())
+                .orElse(null);
     }
 }

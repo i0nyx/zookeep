@@ -7,6 +7,8 @@ import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.ZooKeeper;
 
+import java.util.Objects;
+
 @Slf4j
 @AllArgsConstructor
 public class ZkManagerImpl implements ZkManager {
@@ -19,7 +21,7 @@ public class ZkManagerImpl implements ZkManager {
     }
 
     @Override
-    public Object getZNodeData(final String path) {
+    public String[] getZNodeData(final String path) {
         String result = null;
         try {
             final byte[] byteArr;
@@ -28,7 +30,7 @@ public class ZkManagerImpl implements ZkManager {
         } catch (Exception e) {
             log.error("can't read object " + e);
         }
-        return result;
+        return Objects.requireNonNull(result).split(";");
     }
 
     @Override
