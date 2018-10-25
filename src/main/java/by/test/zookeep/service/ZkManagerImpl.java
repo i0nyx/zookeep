@@ -2,12 +2,13 @@ package by.test.zookeep.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
-import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.ZooKeeper;
+import org.apache.zookeeper.data.Stat;
 
-import java.util.Objects;
+import java.util.List;
+
+import static java.util.Objects.isNull;
 
 @Slf4j
 @AllArgsConstructor
@@ -15,13 +16,12 @@ public class ZkManagerImpl implements ZkManager {
     private ZooKeeper zooKeeper;
 
     @Override
-    public void create(final String path, final byte[] data) throws KeeperException, InterruptedException {
-        zooKeeper.create(path, data, ZooDefs.Ids.OPEN_ACL_UNSAFE,
-                CreateMode.PERSISTENT);
+    public Stat getZNodeStat(final String path) throws KeeperException, InterruptedException {
+        return zooKeeper.exists(path, false);
     }
 
     @Override
-    public String[] getZNodeData(final String path) {
+    public String getZNodeData(final String path) {
         String result = null;
         try {
             final byte[] byteArr;
@@ -30,7 +30,17 @@ public class ZkManagerImpl implements ZkManager {
         } catch (Exception e) {
             log.error("can't read object " + e);
         }
-        return Objects.requireNonNull(result).split(";");
+        return result;
+    }
+
+    @Override
+    public List<String> getZNodeChildren(final String path) throws KeeperException, InterruptedException {
+        Stat status = getZNodeStat(path);
+        List<String> result = null;
+        if(!isNull(status)){
+            result = zooKeeper.getChildren(path, false);
+        }
+        return result;
     }
 
     @Override

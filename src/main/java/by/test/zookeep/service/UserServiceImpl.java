@@ -6,11 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import java.util.Optional;
 import java.util.UUID;
 
-import static by.test.zookeep.constant.Constants.SCHEDULED_TIMEOUT;
-import static by.test.zookeep.constant.Constants.ZK_USER_PATH;
+import static by.test.zookeep.constant.Constants.*;
 
 @Slf4j
 @AllArgsConstructor
@@ -33,23 +31,18 @@ public class UserServiceImpl implements UserService {
     @Override
     @Scheduled(fixedRate = SCHEDULED_TIMEOUT)
     public void checkUserAndSave() {
-        User user = buildUser(getArrStr());
-        if (user != null && !checkUser(user)) {
+        User user = buildUser();
+        if(!checkUser(user)){
             saveUser(user);
         }
     }
 
-    private String[] getArrStr() {
-        return zkManager.getZNodeData(ZK_USER_PATH);
-    }
-
-    private User buildUser(final String[] arr) {
-        return Optional.ofNullable(arr)
-                .filter(a -> a.length == 3)
-                .map(a -> User.builder()
-                        .uuid(UUID.fromString(a[0]))
-                        .name(a[1].trim())
-                        .email(a[2].trim()).build())
-                .orElse(null);
+    private User buildUser(){
+        UUID uuid = UUID.fromString(zkManager.getZNodeData(ZK_USER_UUID));
+        return User.builder()
+                .uuid(uuid)
+                .name(zkManager.getZNodeData(ZK_USER_NAME))
+                .email(zkManager.getZNodeData(ZK_USER_EMAIL))
+                .build();
     }
 }
