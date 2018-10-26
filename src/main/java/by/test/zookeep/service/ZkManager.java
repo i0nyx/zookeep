@@ -6,7 +6,7 @@ import org.apache.zookeeper.data.Stat;
 import java.util.List;
 
 public interface ZkManager {
-    Stat getZNodeStat(final String path) throws KeeperException, InterruptedException;
+    Stat getZNodeStat(final String path);
 
     String getZNodeData(final String path) throws KeeperException, InterruptedException;
 

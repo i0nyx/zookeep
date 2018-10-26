@@ -6,15 +6,13 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import java.util.UUID;
-
-import static by.test.zookeep.constant.Constants.*;
+import static by.test.zookeep.constant.Constants.SCHEDULED_TIMEOUT;
 
 @Slf4j
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
-    private ZkManagerImpl zkManager;
+    private BuildUserService buildUser;
 
     @Override
     public void saveUser(final User user) {
@@ -31,18 +29,10 @@ public class UserServiceImpl implements UserService {
     @Override
     @Scheduled(fixedRate = SCHEDULED_TIMEOUT)
     public void checkUserAndSave() {
-        User user = buildUser();
+        User user = buildUser.buildUserFromJsonNode();
         if(!checkUser(user)){
             saveUser(user);
         }
     }
 
-    private User buildUser(){
-        UUID uuid = UUID.fromString(zkManager.getZNodeData(ZK_USER_UUID));
-        return User.builder()
-                .uuid(uuid)
-                .name(zkManager.getZNodeData(ZK_USER_NAME))
-                .email(zkManager.getZNodeData(ZK_USER_EMAIL))
-                .build();
-    }
 }

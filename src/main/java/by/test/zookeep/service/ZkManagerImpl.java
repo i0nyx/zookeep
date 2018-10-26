@@ -16,8 +16,14 @@ public class ZkManagerImpl implements ZkManager {
     private ZooKeeper zooKeeper;
 
     @Override
-    public Stat getZNodeStat(final String path) throws KeeperException, InterruptedException {
-        return zooKeeper.exists(path, false);
+    public Stat getZNodeStat(final String path) {
+        Stat stat = null;
+        try {
+            stat = zooKeeper.exists(path, false);
+        } catch (KeeperException | InterruptedException e) {
+            log.error("zookeeper exception " + e);
+        }
+        return stat;
     }
 
     @Override
