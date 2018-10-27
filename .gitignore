@@ -2,3 +2,5 @@
 target/
 *.jar
 src/test/
+out/
+MANIFEST.MF

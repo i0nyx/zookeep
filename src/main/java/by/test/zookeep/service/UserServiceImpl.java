@@ -35,4 +35,13 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    private User buildUser(){
+        return User.builder()
+                .uuid(checkAndConvertUuid(zkManager.getZNodeData(ZK_USER_UUID)))
+                .name(zkManager.getZNodeData(ZK_USER_NAME))
+                .email(zkManager.getZNodeData(ZK_USER_EMAIL))
+                .build();
+    }
+
+
 }
