@@ -5,14 +5,16 @@ import by.test.zookeep.repositories.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
 
 import static by.test.zookeep.constant.Constants.SCHEDULED_TIMEOUT;
 
 @Slf4j
+@Service
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
-    private UserRepository userRepository;
-    private BuildUserService buildUser;
+    private final UserRepository userRepository;
+    private final BuildUserService buildUser;
 
     @Override
     public void saveUser(final User user) {

@@ -3,12 +3,14 @@ package by.test.zookeep.service;
 import by.test.zookeep.pojo.User;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.UUID;
 
 import static com.google.common.collect.Lists.newArrayList;
 
+@Component
 public class BuildUserServiceImpl implements BuildUserService {
     @Value("${zk.user.uuid}")
     private String pathUserUuid;
@@ -18,9 +20,9 @@ public class BuildUserServiceImpl implements BuildUserService {
     private String pathUserEmail;
     @Value("${zk.user.data.json}")
     private String pathUserDataJson;
-    private ZkManagerImpl zkManager;
+    private final ZkManagerImpl zkManager;
 
-    public BuildUserServiceImpl(ZkManagerImpl zkManager) {
+    public BuildUserServiceImpl(final ZkManagerImpl zkManager) {
         this.zkManager = zkManager;
     }
 
