@@ -32,27 +32,30 @@ public class BuildUserServiceImpl implements BuildUserService {
 
     @Override
     public User buildUserFromNodes() {
-        return User.builder()
-                .uuid(checkAndConvertUuid(zkManager.getZNodeData(pathUserUuid)))
-                .name(zkManager.getZNodeData(pathUserName))
-                .email(zkManager.getZNodeData(pathUserEmail))
-                .build();
+        User result = null;
+        if (!zkManager.getZNodeData(pathUserName).isEmpty() && !zkManager.getZNodeData(pathUserEmail).isEmpty()) {
+            result = User.builder()
+                    .uuid(checkAndConvertUuid(zkManager.getZNodeData(pathUserUuid)))
+                    .name(zkManager.getZNodeData(pathUserName))
+                    .email(zkManager.getZNodeData(pathUserEmail))
+                    .build();
+        }
+        return result;
     }
 
     @Override
     public User buildUserFromJsonNode() {
-        JSONObject jsonObject = null;
-        try {
-            jsonObject = new JSONObject(zkManager.getZNodeData(pathUserDataJson));
-        } catch (JSONException e) {
-            log.error("json parse error " + e);
-        }
+        JSONObject jsonObject = checkJson(zkManager.getZNodeData(pathUserDataJson));
         ofNullable(jsonObject).orElseThrow(NullPointerException::new);
-        return User.builder()
-                .uuid(checkAndConvertUuid(jsonObject.getString("uuid")))
-                .name(jsonObject.getString("name"))
-                .email(jsonObject.getString("email"))
-                .build();
+        User result = null;
+        if (!jsonObject.getString("name").isEmpty() && !jsonObject.getString("email").isEmpty()) {
+            result = User.builder()
+                    .uuid(checkAndConvertUuid(jsonObject.getString("uuid")))
+                    .name(jsonObject.getString("name"))
+                    .email(jsonObject.getString("email"))
+                    .build();
+        }
+        return result;
     }
 
     @Override
@@ -68,5 +71,15 @@ public class BuildUserServiceImpl implements BuildUserService {
             return UUID.randomUUID();
         }
         return UUID.fromString(uuidStr);
+    }
+
+    private JSONObject checkJson(final String str) {
+        JSONObject jsonObject = null;
+        try {
+            jsonObject = new JSONObject(str);
+        } catch (JSONException e) {
+            log.error("json parse error " + e);
+        }
+        return jsonObject;
     }
 }

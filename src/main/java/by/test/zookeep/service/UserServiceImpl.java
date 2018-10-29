@@ -8,6 +8,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import static by.test.zookeep.constant.Constants.SCHEDULED_TIMEOUT;
+import static java.util.Objects.isNull;
 
 @Service
 @Slf4j
@@ -32,6 +33,7 @@ public class UserServiceImpl implements UserService {
     @Scheduled(fixedRate = SCHEDULED_TIMEOUT)
     public void checkUserAndSave() {
         buildUser.buildListUsers().stream()
+                .filter(user -> !isNull(user))
                 .filter(user -> !checkUser(user))
                 .forEach(this::saveUser);
     }
