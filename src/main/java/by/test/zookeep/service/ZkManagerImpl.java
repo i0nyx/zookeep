@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import static java.util.Objects.isNull;
+import static java.util.Optional.ofNullable;
 
 @Service
 @Slf4j
@@ -22,8 +23,8 @@ public class ZkManagerImpl implements ZkManager {
         Stat stat = null;
         try {
             stat = zooKeeper.exists(path, false);
-        } catch (KeeperException | InterruptedException e) {
-            log.error("zookeeper exception " + e);
+        } catch (KeeperException | InterruptedException | IllegalArgumentException e) {
+            log.error("zookeeper path exception " + e);
         }
         return stat;
     }
@@ -31,10 +32,9 @@ public class ZkManagerImpl implements ZkManager {
     @Override
     public String getZNodeData(final String path) {
         String result = null;
+        ofNullable(getZNodeStat(path)).orElseThrow(NullPointerException::new);
         try {
-            final byte[] byteArr;
-            byteArr = zooKeeper.getData(path, null, null);
-            result = new String(byteArr);
+            result = new String(zooKeeper.getData(path, null, null));
         } catch (Exception e) {
             log.error("can't read object " + e);
         }

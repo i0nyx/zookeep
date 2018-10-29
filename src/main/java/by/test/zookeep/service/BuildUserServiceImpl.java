@@ -1,6 +1,8 @@
 package by.test.zookeep.service;
 
 import by.test.zookeep.pojo.User;
+import lombok.extern.slf4j.Slf4j;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -9,9 +11,12 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static java.util.Optional.ofNullable;
 
 @Service
+@Slf4j
 public class BuildUserServiceImpl implements BuildUserService {
+    private final ZkManagerImpl zkManager;
     @Value("${zk.user.uuid}")
     private String pathUserUuid;
     @Value("${zk.user.name}")
@@ -20,7 +25,6 @@ public class BuildUserServiceImpl implements BuildUserService {
     private String pathUserEmail;
     @Value("${zk.user.data.json}")
     private String pathUserDataJson;
-    private final ZkManagerImpl zkManager;
 
     public BuildUserServiceImpl(final ZkManagerImpl zkManager) {
         this.zkManager = zkManager;
@@ -37,7 +41,13 @@ public class BuildUserServiceImpl implements BuildUserService {
 
     @Override
     public User buildUserFromJsonNode() {
-        JSONObject jsonObject = new JSONObject(zkManager.getZNodeData(pathUserDataJson));
+        JSONObject jsonObject = null;
+        try {
+            jsonObject = new JSONObject(zkManager.getZNodeData(pathUserDataJson));
+        } catch (JSONException e) {
+            log.error("json parse error " + e);
+        }
+        ofNullable(jsonObject).orElseThrow(NullPointerException::new);
         return User.builder()
                 .uuid(checkAndConvertUuid(jsonObject.getString("uuid")))
                 .name(jsonObject.getString("name"))
