@@ -4,3 +4,4 @@ target/
 src/test/
 out/
 MANIFEST.MF
+*.iml
