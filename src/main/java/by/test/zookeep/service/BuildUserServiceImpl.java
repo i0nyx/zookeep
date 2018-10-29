@@ -1,31 +1,41 @@
 package by.test.zookeep.service;
 
 import by.test.zookeep.pojo.User;
-import lombok.AllArgsConstructor;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.List;
 import java.util.UUID;
 
-import static by.test.zookeep.constant.Constants.*;
 import static com.google.common.collect.Lists.newArrayList;
 
-@AllArgsConstructor
 public class BuildUserServiceImpl implements BuildUserService {
+    @Value("${zk.user.uuid}")
+    private String pathUserUuid;
+    @Value("${zk.user.name}")
+    private String pathUserName;
+    @Value("${zk.user.email}")
+    private String pathUserEmail;
+    @Value("${zk.user.data.json}")
+    private String pathUserDataJson;
     private ZkManagerImpl zkManager;
+
+    public BuildUserServiceImpl(ZkManagerImpl zkManager) {
+        this.zkManager = zkManager;
+    }
 
     @Override
     public User buildUserFromNodes() {
         return User.builder()
-                .uuid(checkAndConvertUuid(zkManager.getZNodeData(ZK_USER_UUID)))
-                .name(zkManager.getZNodeData(ZK_USER_NAME))
-                .email(zkManager.getZNodeData(ZK_USER_EMAIL))
+                .uuid(checkAndConvertUuid(zkManager.getZNodeData(pathUserUuid)))
+                .name(zkManager.getZNodeData(pathUserName))
+                .email(zkManager.getZNodeData(pathUserEmail))
                 .build();
     }
 
     @Override
     public User buildUserFromJsonNode() {
-        JSONObject jsonObject = new JSONObject(zkManager.getZNodeData(ZK_USER_DATA_JSON));
+        JSONObject jsonObject = new JSONObject(zkManager.getZNodeData(pathUserDataJson));
         return User.builder()
                 .uuid(checkAndConvertUuid(jsonObject.getString("uuid")))
                 .name(jsonObject.getString("name"))
@@ -47,6 +57,4 @@ public class BuildUserServiceImpl implements BuildUserService {
         }
         return UUID.fromString(uuidStr);
     }
-
-
 }

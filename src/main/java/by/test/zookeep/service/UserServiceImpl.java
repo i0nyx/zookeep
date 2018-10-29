@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
     @Scheduled(fixedRate = SCHEDULED_TIMEOUT)
     public void checkUserAndSave() {
         buildUser.buildListUsers().stream()
-                .filter(u -> !checkUser(u))
+                .filter(user -> !checkUser(user))
                 .forEach(this::saveUser);
     }
 }
