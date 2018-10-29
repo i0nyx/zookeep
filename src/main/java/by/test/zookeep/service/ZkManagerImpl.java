@@ -5,11 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.data.Stat;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 import static java.util.Objects.isNull;
 
+@Service
 @Slf4j
 @AllArgsConstructor
 public class ZkManagerImpl implements ZkManager {

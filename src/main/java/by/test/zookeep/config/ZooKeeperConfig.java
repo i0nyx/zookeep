@@ -1,6 +1,5 @@
 package by.test.zookeep.config;
 
-import by.test.zookeep.service.ZkManagerImpl;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,11 +30,6 @@ public class ZooKeeperConfig {
                 downLatch.countDown();
             }
         });
-    }
-
-    @Bean
-    public ZkManagerImpl zkManager() throws IOException {
-        return new ZkManagerImpl(zooKeeper());
     }
 
 }

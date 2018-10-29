@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 
 import static by.test.zookeep.constant.Constants.SCHEDULED_TIMEOUT;
 
-@Slf4j
 @Service
+@Slf4j
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
