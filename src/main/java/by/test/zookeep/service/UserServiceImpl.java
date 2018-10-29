@@ -29,9 +29,8 @@ public class UserServiceImpl implements UserService {
     @Override
     @Scheduled(fixedRate = SCHEDULED_TIMEOUT)
     public void checkUserAndSave() {
-        User user = buildUser.buildUserFromJsonNode();
-        if(!checkUser(user)){
-            saveUser(user);
-        }
+        buildUser.buildListUsers().stream()
+                .filter(u -> !checkUser(u))
+                .forEach(this::saveUser);
     }
 }

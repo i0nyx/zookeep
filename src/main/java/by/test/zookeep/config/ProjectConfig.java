@@ -1,7 +1,7 @@
 package by.test.zookeep.config;
 
 import by.test.zookeep.repositories.UserRepository;
-import by.test.zookeep.service.BuildUserService;
+import by.test.zookeep.service.BuildUserServiceImpl;
 import by.test.zookeep.service.UserServiceImpl;
 import by.test.zookeep.service.ZkManagerImpl;
 import lombok.AllArgsConstructor;
@@ -30,7 +30,7 @@ public class ProjectConfig {
     }
 
     @Bean
-    public BuildUserService buildUserService(){
-        return new BuildUserService(zkManager);
+    public BuildUserServiceImpl buildUserService(){
+        return new BuildUserServiceImpl(zkManager);
     }
 }
